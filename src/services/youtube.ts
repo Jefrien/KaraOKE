@@ -41,7 +41,8 @@ const downloadVideoYTDL = (url: string, path: string) => {
                 preferFreeFormats: true,
                 addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
                 format: 'worst[ext=mp4]',
-                output: path
+                output: path,
+                cookies: process.env.YOUTUBE_COOKIES
             }).then((data) => {
                 resolve(data)
             }).catch((error) => {
