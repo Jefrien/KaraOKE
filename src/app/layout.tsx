@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from 'nextjs-toploader';
 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({  
   subsets: ["latin"],
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800', '900']
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "KaraOKE - La aplicacion #1 de karaoke",
@@ -27,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden h-screen`}
+        className={`${montserrat.className} antialiased overflow-hidden h-screen`}
       >
         <NextTopLoader height={2} showSpinner={true} speed={800} color="rgb(16, 185, 129)" />
         {children}

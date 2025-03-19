@@ -1,3 +1,5 @@
+import { TracksDatum } from "./chart";
+
 export interface PlaylistResponse {
     id:             string;
     title:          string;
@@ -41,7 +43,7 @@ export enum CreatorType {
 }
 
 export interface Tracks {
-    data:     Datum[];
+    data:     TracksDatum[];
     checksum: string;
 }
 

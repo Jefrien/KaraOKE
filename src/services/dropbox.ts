@@ -22,3 +22,29 @@ export async function existVideo(path: string) {
         return false
     }
 }
+
+export async function download(path: string) {
+    const api_url = 'https://content.dropboxapi.com/2/files/download'
+
+    console.log('Descargando video: ' + path)
+
+    const headers = await getDropboxHeaders({
+        'Dropbox-API-Arg': JSON.stringify({
+            path: path
+        })
+    });
+
+    const response = await fetch(api_url, {
+        method: 'POST',
+        headers: headers
+    })
+
+    if (response.ok) {
+        const data = await response.blob();
+        console.log('Video descargado')
+        return data
+    } else {
+        console.log('Error al descargar el video:', response.statusText);
+        return false
+    }
+}

@@ -13,8 +13,10 @@ export async function validateDropboxToken() {
 
     if (response.ok) {
         await response.json();                
+        console.log('Dropbox token validado')
     } else {
         await refreshAccessToken()
+        console.log('Dropbox token refrescado')
     }
 
     return true

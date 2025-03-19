@@ -1,59 +1,78 @@
 'use server'
 import { YTSearchResponse } from "@/types/yt"
-import ytdl from '@distube/ytdl-core';
-import { PassThrough } from 'stream';
-import { cookies } from 'next/headers';
+import fs from 'fs'
+import { create } from "youtube-dl-exec";
 
 export async function searchYtT(query: string, id: string, setCookie: boolean = false, limit = 1) {
-    const cookiesStore = await cookies()
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=${limit}&q=${query}&key=${process.env.YOUTUBE_API_KEY}`
-    const response = await fetch(url)
-    const data = await response.json() as YTSearchResponse
-    console.log(data)
+    try {
+        console.log(setCookie, id)
+        const params: Record<string, string> = {
+            key: process.env.YOUTUBE_API_KEY || '',
+            q: query,
+            part: 'snippet',
+            type: 'video',
+            videoEmbeddable: 'true', // Solo videos que se pueden incrustar
+            videoSyndicated: 'true', // Solo videos que se pueden sindicar
+            maxResults: limit.toString()
+        }
 
-    if (data.items.length > 0 && setCookie) {        
-        cookiesStore.set('ytinfo_' + id, JSON.stringify(data.items[0]))        
+        const url = `https://www.googleapis.com/youtube/v3/search?${new URLSearchParams(params)}`
+        const response = await fetch(url)
+        const data = await response.json() as YTSearchResponse
+
+        /*if (data.items.length > 0 && setCookie) {
+            cookiesStore.set('ytinfo_' + id, JSON.stringify(data.items[0]))
+        }*/
+        return data.items
+    } catch (error) {
+        console.log('Error al buscar el video:', error)
+        return []
     }
-    return data.items
 }
 
-export async function downloadVideo(videoId: string) {
+const downloadVideoYTDL = (url: string, path: string) => {
     return new Promise((resolve, reject) => {
+        try {
+            const youtubeDl = create('node_modules/youtube-dl-exec/bin/yt-dlp.exe')
 
-        setTimeout(() => {
-            console.log('timeout ' + videoId)
-            resolve(null)
-        }, 30000);
+            youtubeDl(url, {
+                noCheckCertificates: true,
+                noWarnings: true,
+                preferFreeFormats: true,
+                addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
+                format: 'worst[ext=mp4]',
+                output: path
+            }).then((data) => {
+                resolve(data)
+            }).catch((error) => {
+                console.log('Error al buscar el video:', error)
+                reject(error)
+            })
+        } catch (error) {
+            console.log('Error al buscar el video:', error)
+            reject(error)
+        }
+    })
+}
 
+export async function downloadVideo(videoId: number, videoAlt: string = '') {
+    try {
+        const filename = 'tmp/' + videoId + new Date().getTime() + '.mp4'
         const url = `http://www.youtube.com/watch?v=${videoId}`
 
-        const options = {
-            quality: 'lowest',
-        };
+        console.log('trying to download video ' + videoId, videoAlt)
 
-        console.log('trying to download video ' + videoId)
+        await downloadVideoYTDL(url, filename)
 
-        const videoStream = ytdl(url, options);
-        const passThroughStream = new PassThrough();
+        // read file as buffer
+        const buffer = fs.readFileSync(filename)
 
-        videoStream.pipe(passThroughStream);
+        // delete file
+        fs.unlinkSync(filename)
 
-        let videoBuffer: any = [];
-        passThroughStream.on('data', (chunk) => {
-            console.log('intenal download in process')
-            videoBuffer.push(chunk);
-        });
-
-        passThroughStream.on('end', async () => {            
-            videoBuffer = Buffer.concat(videoBuffer);
-            console.log('intenal download finished')
-            resolve(videoBuffer);
-        });
-
-        passThroughStream.on('error', (error) => {
-            console.log('intenal download error', error)
-            reject(error);
-        })
-        
-    })
+        return buffer
+    } catch (error) {
+        console.log('Error al descargar el video:', error)
+        return null
+    }
 }

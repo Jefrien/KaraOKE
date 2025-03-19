@@ -14,6 +14,12 @@ export interface Item {
     snippet: Snippet;
 }
 
+export interface ItemSmall {
+    id: string;
+    title: string;
+    thumbnail: string;
+}
+
 export interface ID {
     kind:    IDKind;
     videoId: string;

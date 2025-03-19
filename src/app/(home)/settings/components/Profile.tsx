@@ -17,7 +17,7 @@ export function LogoutButton() {
 
 export default async function Profile({ user }: { user: User }) {
 
-    const dropbox = await verifyDropbox()
+    const dropbox = await verifyDropbox()    
 
     return (
         <div className="mt-6 p-6 bg-emerald-700 rounded-xl max-w-xl">

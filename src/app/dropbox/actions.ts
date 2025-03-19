@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { TracksDatum } from '@/types/chart'
 import { revalidatePath } from 'next/cache';
-import { existVideo } from '@/services/dropbox';
+import { download, existVideo } from '@/services/dropbox';
 
 export async function refreshAccessToken() {
     const tokenUrl = 'https://api.dropbox.com/oauth2/token';
@@ -64,6 +64,7 @@ export async function verifyDropbox() {
 
         return true
     } catch (error) {
+        console.log('Error al verificar el token:', error)
         return false
     }
 }
@@ -165,4 +166,8 @@ export async function findVideo(track: TracksDatum) {
     }
 
     revalidatePath('/song/' + track.id)
+}
+
+export async function downloadVideo(videoId: number) {    
+    return await download(`/karaoke/${videoId}.mp4`)
 }

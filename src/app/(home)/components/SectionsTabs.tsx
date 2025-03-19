@@ -3,10 +3,13 @@ import { ChartResponse } from "@/types/chart";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import TrackRowItem from "./TrackRowItem";
+import PlaylistItem from "./PlaylistItem";
+import ArtistItem from "./ArtistItem";
+import AlbumItem from "./AlbumItem";
 
 export default function SectionsTabs({ chart }: { chart: ChartResponse }) {
 
-    const { tracks } = chart
+    const { tracks, playlists, artists, albums } = chart
     const [activeTab, setActiveTab] = useState('songs');
 
     const tabs = [
@@ -41,6 +44,30 @@ export default function SectionsTabs({ chart }: { chart: ChartResponse }) {
                     <div className="flex flex-col">
                         {tracks.data.map((track, index) => (
                             <TrackRowItem key={index} track={track} number={index + 1} />
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === 'playlists' && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-6">
+                        {playlists.data.map((playlist, index) => (
+                            <PlaylistItem key={index} playlist={playlist} number={index + 1} />
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === 'artists' && (
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-6">
+                        {artists.data.map((artist, index) => (
+                            <ArtistItem key={index} artist={artist} number={index + 1} />
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === 'albums' && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-6">
+                        {albums.data.map((album, index) => (
+                            <AlbumItem key={index} album={album} number={index + 1} />
                         ))}
                     </div>
                 )}

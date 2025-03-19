@@ -3,6 +3,7 @@ import { AudioLines, Library, Search, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { twMerge } from "tailwind-merge"
+import ButtonMenu from "./ButtonMenu"
 export default function Sidebar() {
 
     const path = usePathname()
@@ -16,7 +17,10 @@ export default function Sidebar() {
 
     return (
 
-        <div className="w-64 bg-black py-6 flex flex-col gap-6 flex-none">
+        <div className="side bg-black py-6 flex-col gap-6 flex-none xl:flex hidden absolute top-0 left-0 w-5/6 h-screen lg:w-64 lg:relative z-20">
+
+            <ButtonMenu isSidebar={true}/>
+
             <h1 className="text-3xl font-bold text-white px-6 text-center">
                 Kara
                 <span className="text-emerald-500">oke</span>

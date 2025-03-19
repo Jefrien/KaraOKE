@@ -12,7 +12,7 @@ export default function MainScroll({ children }: { children: any }) {
             alwaysShowTracks={false}
             thumbMinSize={5}
             damping={0.2}>*/
-            <div style={{ height: 'calc( 100vh - 100px )' }} className='px-6 overflow-y-auto' >
+            <div style={{ height: 'calc( 100vh - 100px )' }} className='px-6 overflow-y-auto pb-6' >
                 {children}
             </div>
        // </Scrollbar>

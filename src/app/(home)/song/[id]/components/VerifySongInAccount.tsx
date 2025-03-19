@@ -13,15 +13,30 @@ export default function VerifySongInAccount({ song }: { song: TracksDatum }) {
     const [option, setOption] = useState<Item | null>(null)
 
     const init = async () => {
-        const items = await searchYtT('karaoke ' + song.title + ' ' + song.artist.name, song.id.toString(), true)
-        setOption(items[0])
+        const items = await searchYtT('karaoke ' + song.title + ' ' + song.artist.name, song.id.toString(), true, 2)
+        let item = items[0]
+        setOption(item)
+        window.localStorage.setItem('ytinfo_' + song.id.toString(), JSON.stringify({
+            title: item.snippet.title,
+            id: item.id.videoId,
+            thumbnail: item.snippet.thumbnails.medium.url
+        }))
+
+        // opion 2
+        item = items[1]
+        window.localStorage.setItem('alt_ytinfo_' + song.id.toString(), JSON.stringify({
+            title: item.snippet.title,
+            id: item.id.videoId,
+            thumbnail: item.snippet.thumbnails.medium.url
+        }))
+
         await validateDropboxToken()
         await findVideo(song)
     }
 
     useEffect(() => {
         init()
-    }, [])
+    }, [''])
 
     return (
         <>

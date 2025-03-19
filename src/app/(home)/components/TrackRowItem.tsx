@@ -1,9 +1,10 @@
 import { TracksDatum } from "@/types/chart";
-import { AudioWaveform, MicVocal, Play } from "lucide-react";
+import { MicVocal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ButtonFavorite from "./ButtonFavorite";
 
-export default function TrackRowItem({ track, number }: { track: TracksDatum, number: number }) {
+export default function TrackRowItem({ track, number, isFavorite = false }: { track: TracksDatum, number: number, isFavorite?: boolean }) {
 
     const durationFormat = (duration: number) => {
         const minutes = Math.floor(duration / 60);
@@ -13,8 +14,8 @@ export default function TrackRowItem({ track, number }: { track: TracksDatum, nu
 
     return (
         <div>
-            <Link href={`/song/${track.id}`} className="group cursor-pointer grid grid-cols-3 items-center justify-between gap-4 py-3 px-4 hover:bg-neutral-800/80">
-                <div className="flex items-center gap-4">
+            <Link href={`/song/${track.id}`} className="group cursor-pointer grid  grid-cols-5 md:grid-cols-3 items-center justify-between gap-4 py-3 px-4 hover:bg-neutral-800/80">
+                <div className="flex items-center gap-4 col-span-4 md:col-span-1">
                     <span className="group-hover:hidden w-5 text-center">
                         {number}
                     </span>
@@ -31,21 +32,19 @@ export default function TrackRowItem({ track, number }: { track: TracksDatum, nu
                     />
 
                     <div className="flex flex-col">
-                        <span className="line-clamp-1 ">
+                        <span className="line-clamp-1 text-sm md:text-base ">
                             {track.title}
                         </span>
-                        <span className="text-gray-400 text-sm">
+                        <Link href={`/artist/${track.artist.id}`} className="text-gray-400 text-sm hover:text-white hover:underline">
                             {track.artist.name}
-                        </span>
+                        </Link>
                     </div>
                 </div>
-                <span className="text-gray-400 text-sm line-clamp-1 whitespace-nowrap overflow-hidden text-ellipsis block">
+                <Link href={`/album/${track.album.id}`} className="text-gray-400 text-sm line-clamp-1 whitespace-nowrap overflow-hidden text-ellipsis hidden md:block hover:text-white hover:underline">
                     {track.album.title}
-                </span>
+                </Link>
                 <div className="text-right flex justify-end gap-6 items-center">
-                    <span className="hidden group-hover:inline-flex w-8 h-8 bg-emerald-600 items-center justify-center rounded-full">
-                        <AudioWaveform className="h-5 w-5 text-white" />
-                    </span>
+                    <ButtonFavorite track={track} isFavorite={isFavorite} />
                     <span className="text-gray-400 text-sm">
                         {durationFormat(track.duration)}
                     </span>
