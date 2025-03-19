@@ -33,7 +33,7 @@ export async function searchYtT(query: string, id: string, setCookie: boolean = 
 const downloadVideoYTDL = (url: string, path: string) => {
     return new Promise((resolve, reject) => {
         try {
-            const youtubeDl = create('node_modules/youtube-dl-exec/bin/yt-dlp.exe')
+            const youtubeDl = create(process.env.YOUTUBE_DL_PATH || 'node_modules/youtube-dl-exec/bin/yt-dlp.exe')
 
             youtubeDl(url, {
                 noCheckCertificates: true,
